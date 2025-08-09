@@ -1,507 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logan Simba - Full Stack Developer</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Logan Simba — Full‑Stack Developer</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0b10;
+      --bg-2: #0d0f1e;
+      --text: #e7eaf6;
+      --muted: #a7b0d0;
+      --brand: #7aa2ff;
+      --brand-2: #8a5cff;
+      --accent: #67e480;
+      --card: rgba(255, 255, 255, 0.06);
+      --stroke: rgba(255,255,255,.12);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    [data-theme="light"] {
+      --bg: #f6f7fb;
+      --bg-2: #ffffff;
+      --text: #141624;
+      --muted: #4b4f6b;
+      --brand: #4c65ff;
+      --brand-2: #8b5cf6;
+      --accent: #0ea5e9;
+      --card: rgba(0, 0, 0, 0.04);
+      --stroke: rgba(20,22,36,.12);
+      --shadow: 0 10px 30px rgba(2, 7, 26, .08);
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color: var(--text); background: var(--bg);
+      overflow-x: hidden;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+    /* Background mesh */
+    .bg {
+      position: fixed; inset: -20vmax; z-index: -1; filter: blur(60px) saturate(140%);
+      background:
+        radial-gradient(40vmax 30vmax at 20% 10%, color-mix(in oklab, var(--brand) 70%, #00ddeb 30%), transparent 60%),
+        radial-gradient(35vmax 30vmax at 85% 20%, color-mix(in oklab, var(--brand-2) 75%, #00ffaa 25%), transparent 55%),
+        radial-gradient(35vmax 30vmax at 50% 90%, #00c2ff66, transparent 60%);
+      animation: float 24s ease-in-out infinite alternate;
+    }
+    @media (prefers-reduced-motion: reduce) { .bg { animation: none; } }
+    @keyframes float { to { transform: translate3d(0,-30px,0) scale(1.02); } }
 
-        /* Header */
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
+    .container { width: min(1200px, 92vw); margin-inline: auto; }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-        }
+    /* Header */
+    header { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(14px); border-bottom: 1px solid var(--stroke);
+      background: color-mix(in oklab, var(--bg) 70%, transparent); }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
+    .logo { display: flex; gap: 10px; align-items: center; font-weight: 800; letter-spacing: .3px; }
+    .logo i { color: var(--brand); }
+    .nav-links { display: flex; gap: 22px; align-items: center; list-style: none; margin: 0; }
+    .nav-links a { color: var(--text); text-decoration: none; opacity: .9; font-weight: 600; }
+    .nav-links a:hover { opacity: 1; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 12px; text-decoration: none; border: 1px solid var(--stroke); background: var(--card); color: var(--text); box-shadow: var(--shadow); }
+    .btn:hover { transform: translateY(-1px); }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
-        }
+    .theme-toggle { cursor: pointer; }
+    .menu-toggle { display: none; }
+    @media (max-width: 860px) {
+      .menu-toggle { display: inline-flex; }
+      .nav-links { position: fixed; right: 14px; top: 64px; flex-direction: column; padding: 12px; background: var(--bg-2); border:1px solid var(--stroke); border-radius: 14px; display: none; }
+      .nav-links.open { display: flex; }
+    }
 
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
+    /* Hero */
+    .hero { display: grid; align-items: center; min-height: 88vh; padding: 56px 0 20px; }
+    .hero h1 { font-size: clamp(2rem, 4vw + 1rem, 4rem); line-height: 1.08; margin: 0 0 12px; }
+    .subtitle { font-size: clamp(1rem, 1.2vw + .6rem, 1.25rem); color: var(--muted); margin-bottom: 22px; }
+    .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+    .cta .primary { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #fff; border: none; }
+    .cta .primary:hover { filter: brightness(1.05); }
 
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
+    /* Sections */
+    .section { padding: 80px 0; }
+    .section-title { font-size: clamp(1.6rem, 1.8vw + 1rem, 2.2rem); margin: 0 0 24px; }
+    .lead { color: var(--muted); max-width: 72ch; }
 
-        .nav-links a:hover {
-            color: #667eea;
-        }
+    /* Cards */
+    .grid { display: grid; gap: 18px; grid-template-columns: repeat(12, 1fr); }
+    .card { grid-column: span 12; background: var(--card); border: 1px solid var(--stroke); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); }
+    .about-card { display: grid; gap: 18px; grid-template-columns: 220px 1fr; align-items: center; }
+    .avatar { width: 200px; height: 200px; border-radius: 24px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); display: grid; place-items: center; font-size: 64px; color: #fff; border: 1px solid var(--stroke); box-shadow: var(--shadow); }
 
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: white;
-            padding-top: 80px;
-        }
+    @media (max-width: 860px) { .about-card { grid-template-columns: 1fr; text-align: center; } .avatar { margin: 0 auto; } }
 
-        .hero-content h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            animation: fadeInUp 1s ease;
-        }
+    .skills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .tag { padding: 6px 10px; border-radius: 999px; border: 1px solid var(--stroke); background: color-mix(in oklab, var(--card) 70%, transparent); font-size: .9rem; }
 
-        .hero-content .subtitle {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            animation: fadeInUp 1s ease 0.2s both;
-        }
+    /* Projects */
+    .projects { grid-template-columns: repeat(12, 1fr); }
+    .project { grid-column: span 6; display: grid; gap: 12px; overflow: hidden; }
+    .project .thumb { height: 200px; border-radius: 14px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); display: grid; place-items: center; font-size: 42px; color: #fff; border:1px solid var(--stroke); }
+    .project .body { background: var(--card); border: 1px solid var(--stroke); border-radius: 14px; padding: 16px; }
+    .project h3 { margin: 0 0 6px; }
+    .tech { display:flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+    .tech .chip { font-size: .8rem; padding: 4px 10px; border-radius: 999px; background: color-mix(in oklab, var(--bg-2) 92%, transparent); border: 1px solid var(--stroke); }
+    .links { display:flex; gap: 10px; }
 
-        .cta-button {
-            display: inline-block;
-            padding: 12px 30px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s;
-            animation: fadeInUp 1s ease 0.4s both;
-        }
+    @media (max-width: 1000px) { .project { grid-column: span 12; } }
 
-        .cta-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
+    /* Contact */
+    .contact { text-align: center; }
+    .contact-list { display:flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
+    .contact-item { display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border:1px solid var(--stroke); border-radius: 12px; background: var(--card); }
 
-        /* Sections */
-        .section {
-            padding: 80px 0;
-            background: white;
-        }
+    /* Utilities */
+    .sr-only { position: absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip: rect(0,0,0,0); border:0; }
+    .center { text-align:center; }
+    .muted { color: var(--muted); }
 
-        .section:nth-child(even) {
-            background: #f8f9fa;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #333;
-        }
-
-        /* About Section */
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .about-text {
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-
-        .skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .skill-tag {
-            background: #667eea;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 25px;
-            font-size: 0.9rem;
-        }
-
-        /* Projects Section */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .project-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .project-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-
-        .project-image {
-            height: 200px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
-        }
-
-        .project-content {
-            padding: 1.5rem;
-        }
-
-        .project-title {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-            color: #333;
-        }
-
-        .project-description {
-            color: #666;
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .tech-tag {
-            background: #f0f0f0;
-            color: #333;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-        }
-
-        .project-links {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .project-link {
-            padding: 8px 16px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .live-demo {
-            background: #667eea;
-            color: white;
-        }
-
-        .live-demo:hover {
-            background: #5a6fd8;
-            transform: translateY(-2px);
-        }
-
-        .github-link {
-            background: #333;
-            color: white;
-        }
-
-        .github-link:hover {
-            background: #555;
-            transform: translateY(-2px);
-        }
-
-        /* Contact Section */
-        .contact-content {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .contact-info {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .contact-item i {
-            color: #667eea;
-            font-size: 1.2rem;
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-
-            .about-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .contact-info {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-    </style>
+    /* Smooth reveal (no heavy libs) */
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.show { opacity: 1; transform: none; }
+  </style>
 </head>
 <body>
-    <header>
-        <nav class="container">
-            <div class="logo">Logan Simba</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+  <div class="bg" aria-hidden="true"></div>
+  <a href="#home" class="sr-only">Skip to content</a>
+  <header>
+    <nav class="container">
+      <div class="logo"><i class="fa-solid fa-bolt"></i> Logan Simba</div>
+      <button class="btn menu-toggle" aria-controls="nav" aria-expanded="false"><i class="fa-solid fa-bars"></i> Menu</button>
+      <ul id="nav" class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><button id="themeBtn" class="btn theme-toggle" title="Toggle theme"><i class="fa-solid fa-moon"></i></button></li>
+      </ul>
+    </nav>
+  </header>
 
-    <section id="home" class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Full Stack Developer</h1>
-                <p class="subtitle">Building modern web applications with Python, Java, and cloud technologies</p>
-                <a href="#projects" class="cta-button">View My Work</a>
-            </div>
-        </div>
+  <main id="home" class="hero container reveal">
+    <section>
+      <h1>Full‑Stack Developer crafting useful, fast, and secure web apps.</h1>
+      <p class="subtitle">Python • Java • FastAPI • Spring • SQL • Cloud — building data‑driven products with modern UX.</p>
+      <div class="cta">
+        <a href="#projects" class="btn primary"><i class="fa-solid fa-eye"></i> View My Work</a>
+        <a href="#contact" class="btn"><i class="fa-solid fa-paper-plane"></i> Contact</a>
+      </div>
     </section>
+  </main>
 
-    <section id="about" class="section">
-        <div class="container">
-            <h2 class="section-title">About Me</h2>
-            <div class="about-content">
-                <div>
-                    <div style="width: 200px; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem;">
-                        <i class="fas fa-user"></i>
-                    </div>
-                </div>
-                <div class="about-text">
-                    <p>I'm a passionate full-stack developer with experience in modern web technologies. I love building applications that solve real-world problems and learning new technologies to stay current with industry trends.</p>
-                    
-                    <p>Currently seeking internship opportunities where I can contribute to meaningful projects while continuing to grow my skills in software development.</p>
-                    
-                    <div class="skills">
-                        <span class="skill-tag">Python</span>
-                        <span class="skill-tag">Java</span>
-                        <span class="skill-tag">Spring Boot</span>
-                        <span class="skill-tag">FastAPI</span>
-                        <span class="skill-tag">JavaScript</span>
-                        <span class="skill-tag">HTML/CSS</span>
-                        <span class="skill-tag">SQLAlchemy</span>
-                        <span class="skill-tag">Chart.js</span>
-                        <span class="skill-tag">Database Design</span>
-                        <span class="skill-tag">Data Analysis</span>
-                        <span class="skill-tag">Cloud Deployment</span>
-                        <span class="skill-tag">Git/GitHub</span>
-                        <span class="skill-tag">REST APIs</span>
-                        <span class="skill-tag">Jinja2</span>
-                    </div>
-                </div>
-            </div>
+  <section id="about" class="section container reveal">
+    <h2 class="section-title">About Me</h2>
+    <div class="card about-card">
+      <div class="avatar" aria-hidden="true"><i class="fa-solid fa-user"></i></div>
+      <div>
+        <p class="lead">I’m a CS student and full‑stack developer who loves turning messy datasets and real‑world constraints into clean, fast web apps. I ship quickly, write maintainable code, and iterate with user feedback.</p>
+        <p class="muted">Currently seeking internship opportunities where I can contribute to meaningful projects while levelling up in backend, data, and cloud.</p>
+        <div class="skills">
+          <span class="tag">Python</span><span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">FastAPI</span><span class="tag">JavaScript</span><span class="tag">HTML/CSS</span><span class="tag">SQLAlchemy</span><span class="tag">Chart.js</span><span class="tag">Database Design</span><span class="tag">Data Analysis</span><span class="tag">Cloud Deployment</span><span class="tag">Git/GitHub</span><span class="tag">REST APIs</span><span class="tag">Jinja2</span>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <section id="projects" class="section">
-        <div class="container">
-            <h2 class="section-title">Featured Projects</h2>
-            <div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">Job Market Intelligence Platform</h3>
-                        <p class="project-description">
-                            A comprehensive analytics platform analyzing 1,000+ simulated tech job postings 
-                            with interactive visualizations. Features salary trend analysis, skill demand 
-                            tracking, and market insights with real-time data processing.
-                        </p>
-                        <div class="tech-stack">
-                            <span class="tech-tag">Python</span>
-                            <span class="tech-tag">FastAPI</span>
-                            <span class="tech-tag">SQLAlchemy</span>
-                            <span class="tech-tag">Chart.js</span>
-                            <span class="tech-tag">Jinja2</span>
-                            <span class="tech-tag">Railway</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://job-market-platform-production.up.railway.app" class="project-link live-demo" target="_blank">
-                                <i class="fas fa-external-link-alt"></i> Live Demo
-                            </a>
-                            <a href="https://github.com/LoganSimba/job-market-platform" class="project-link github-link" target="_blank">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-university"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">Banking Management System</h3>
-                        <p class="project-description">
-                            A full-featured banking application built with Spring Boot. Includes account management, 
-                            transaction processing, and a clean web interface. Deployed on Railway cloud platform 
-                            with automated CI/CD pipeline.
-                        </p>
-                        <div class="tech-stack">
-                            <span class="tech-tag">Spring Boot</span>
-                            <span class="tech-tag">Java</span>
-                            <span class="tech-tag">Thymeleaf</span>
-                            <span class="tech-tag">H2 Database</span>
-                            <span class="tech-tag">Railway</span>
-                            <span class="tech-tag">Bootstrap</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://springboot-bankmanagementsystem-production.up.railway.app/" class="project-link live-demo" target="_blank">
-                                <i class="fas fa-external-link-alt"></i> Live Demo
-                            </a>
-                            <a href="https://github.com/LoganSimba/springboot-BankManagementSystem" class="project-link github-link" target="_blank">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-image">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">Portfolio Website</h3>
-                        <p class="project-description">
-                            A responsive portfolio website showcasing my projects and skills. Built with modern 
-                            HTML5, CSS3, and JavaScript with smooth animations and mobile-first design.
-                        </p>
-                        <div class="tech-stack">
-                            <span class="tech-tag">HTML5</span>
-                            <span class="tech-tag">CSS3</span>
-                            <span class="tech-tag">JavaScript</span>
-                            <span class="tech-tag">Responsive Design</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="#" class="project-link live-demo">
-                                <i class="fas fa-external-link-alt"></i> Live Demo
-                            </a>
-                            <a href="#" class="project-link github-link">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <section id="projects" class="section container reveal">
+    <h2 class="section-title">Featured Projects</h2>
+    <div class="grid projects">
+      <!-- Project 1 -->
+      <article class="project">
+        <div class="thumb"><i class="fas fa-chart-bar" aria-hidden="true"></i></div>
+        <div class="body">
+          <h3>Job Market Intelligence Platform</h3>
+          <p class="muted">Analytics platform for 1,000+ tech job postings with salary trends, in‑demand skills, and interactive charts.</p>
+          <div class="tech"><span class="chip">Python</span><span class="chip">FastAPI</span><span class="chip">SQLAlchemy</span><span class="chip">Chart.js</span><span class="chip">Jinja2</span><span class="chip">Railway</span></div>
+          <div class="links">
+            <a class="btn primary" href="https://job-market-platform-production.up.railway.app" target="_blank" rel="noopener">Live Demo <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            <a class="btn" href="https://github.com/LoganSimba/job-market-platform" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+          </div>
         </div>
-    </section>
-
-    <section id="contact" class="section">
-        <div class="container">
-            <h2 class="section-title">Let's Connect</h2>
-            <div class="contact-content">
-                <p>I'm actively seeking internship opportunities and would love to discuss how I can contribute to your team.</p>
-                
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>logansimba77@gmail.com</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fab fa-linkedin"></i>
-                        <span>https://www.linkedin.com/in/logan-simba-9b40b2348/</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fab fa-github"></i>
-                        <span>https://github.com/LoganSimba</span>
-                    </div>
-                </div>
-            </div>
+      </article>
+      <!-- Project 2 -->
+      <article class="project">
+        <div class="thumb"><i class="fas fa-university" aria-hidden="true"></i></div>
+        <div class="body">
+          <h3>Banking Management System</h3>
+          <p class="muted">Spring Boot app with accounts, transactions, and a clean UI. Deployed to Railway with CI/CD.</p>
+          <div class="tech"><span class="chip">Spring Boot</span><span class="chip">Java</span><span class="chip">Thymeleaf</span><span class="chip">H2</span><span class="chip">Railway</span><span class="chip">Bootstrap</span></div>
+          <div class="links">
+            <a class="btn primary" href="https://springboot-bankmanagementsystem-production.up.railway.app/" target="_blank" rel="noopener">Live Demo <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            <a class="btn" href="https://github.com/LoganSimba/springboot-BankManagementSystem" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+          </div>
         </div>
-    </section>
+      </article>
+      <!-- Project 3 -->
+      <article class="project">
+        <div class="thumb"><i class="fas fa-code" aria-hidden="true"></i></div>
+        <div class="body">
+          <h3>Portfolio Website</h3>
+          <p class="muted">Responsive portfolio with animations and mobile‑first layout.</p>
+          <div class="tech"><span class="chip">HTML5</span><span class="chip">CSS3</span><span class="chip">JavaScript</span><span class="chip">Responsive</span></div>
+          <div class="links">
+            <a class="btn primary" href="#" aria-disabled="true">Live Demo</a>
+            <a class="btn" href="#" aria-disabled="true"><i class="fab fa-github"></i> Code</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
 
-    <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
+  <section id="contact" class="section container reveal contact">
+    <h2 class="section-title">Let’s Connect</h2>
+    <p class="lead">I’m actively seeking internship opportunities and would love to talk about how I can help your team ship faster.</p>
+    <div class="contact-list" role="list">
+      <a class="contact-item" href="mailto:logansimba77@gmail.com"><i class="fas fa-envelope"></i> <span>logansimba77@gmail.com</span></a>
+      <a class="contact-item" href="https://www.linkedin.com/in/logan-simba-9b40b2348/" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i> <span>LinkedIn</span></a>
+      <a class="contact-item" href="https://github.com/LoganSimba" target="_blank" rel="noopener"><i class="fab fa-github"></i> <span>GitHub</span></a>
+    </div>
+  </section>
 
-        // Add scroll effect to header
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            if (window.scrollY > 100) {
-                header.style.background = 'rgba(255, 255, 255, 0.98)';
-            } else {
-                header.style.background = 'rgba(255, 255, 255, 0.95)';
-            }
-        });
-    </script>
+  <footer class="center muted" style="padding:40px 0; border-top:1px solid var(--stroke); background: color-mix(in oklab, var(--bg) 80%, transparent);">
+    <div class="container">© <span id="year"></span> Logan Simba. Built with semantic HTML, accessible components, and zero frameworks.</div>
+  </footer>
+
+  <script>
+    // Smooth scroll without breaking hash behavior
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const id = a.getAttribute('href');
+        const el = document.querySelector(id);
+        if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); history.replaceState(null, '', id); }
+      });
+    });
+
+    // Theme toggle (persists)
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    if (saved) root.setAttribute('data-theme', saved);
+    document.getElementById('themeBtn').addEventListener('click', () => {
+      const cur = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      root.setAttribute('data-theme', cur);
+      localStorage.setItem('theme', cur);
+    });
+
+    // Mobile menu
+    const menuBtn = document.querySelector('.menu-toggle');
+    const nav = document.getElementById('nav');
+    menuBtn.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      menuBtn.setAttribute('aria-expanded', open);
+    });
+
+    // Reveal on scroll (lightweight)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
-</html> 
+</html>
