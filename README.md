@@ -4,8 +4,7 @@
   Features a responsive layout, dark/light theme toggle, smooth animations,
   and sections for projects, skills, and contact.
 
-  Live site: [stupendous-cheesecake-aba26b.netlify.app](https://stupendous-c
-  heesecake-aba26b.netlify.app/)
+  Live site: [stupendous-cheesecake-aba26b.netlify.app](https://stupendous-cheesecake-aba26b.netlify.app/)
 
   ---
 
